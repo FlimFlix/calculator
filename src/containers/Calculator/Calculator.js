@@ -8,13 +8,28 @@ const myArr = [[6, 7, 8, 9], [2, 3, 4, 5], ['<', 0, 1, '='], ['*', '/', '+', '-'
 
 class Calculator extends Component {
 
+    onClickDispatch = (elem) => {
+        const {addText, equal, clear} = this.props;
+        if (elem === '=') {
+            return equal
+        } if (elem === '<') {
+            return clear
+        }
+        else
+            return () => addText(elem.toString())
+    };
+
+
     render() {
         return (
             <div className='Calculator'>
-                <h3 className='Scoreboard'>{this.props.counter}</h3>
+                <input className='Scoreboard' type='text' value={this.props.value}></input>
                 <table>
                     <tbody>
-                        {myArr.map((elem) => <tr key={elem}>{elem.map((element)=> <Button name={element} key={element}/>)}</tr>)}
+                    {myArr.map((elem) => <tr key={elem}>{elem.map((element) =>
+                        <Button name={element}
+                                onClick={this.onClickDispatch(element)}
+                                key={element}/>)}</tr>)}
                     </tbody>
                 </table>
             </div>
@@ -23,17 +38,31 @@ class Calculator extends Component {
 }
 
 
-
 const mapStateToProps = state => {
     return {
-        counter: state.counter
+        value: state.value
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        increaseCounter: () => dispatch({type: 'INCREMENT'})
-    };
+        addText: (text) => {
+            dispatch({
+                type: 'ADD_TEXT',
+                text
+            })
+        },
+        clear: () => {
+            dispatch({
+                type: 'CLEAR'
+            })
+        },
+        equal: () => {
+            dispatch({
+                type: 'EQUAL',
+            })
+        }
+    }
 };
 
 
